@@ -7,6 +7,7 @@ processAccounts(fileName);
 
 function processAccounts(file){
 
+  console.log("Starting...");
   createDecodeDigits();
 
   var fs = require('fs'),
@@ -48,6 +49,8 @@ function processAccounts(file){
       account = new Array(9);
     }
   });
+  console.log(accounts);
+  console.log("Done");
 }
 
 
