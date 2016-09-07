@@ -45,6 +45,8 @@ function processAccounts(file){
     else if (l == 3) {
       l = 0;
       var num = accountsToNum(account);
+
+      // This push call is not working and the num has the account number value
       accounts.push(num);
       account = new Array(9);
     }
