@@ -26,7 +26,7 @@ function processAccounts(file){
   });
 
   var l = 0;
-  var accounts = new Array();
+  var accounts = [];
   var account = new Array(9);
   rl.on('line', function(line){
     var chars = line.match(/.{1,3}/g);
@@ -49,10 +49,15 @@ function processAccounts(file){
       // This push call is not working and the num has the account number value
       accounts.push(num);
       account = new Array(9);
+
+      // console.log(accounts);
+      // console.log(num);
     }
+  }).on('close', () => {
+    console.log(accounts);
+    console.log("Done");
+    process.exit(0);
   });
-  console.log(accounts);
-  console.log("Done");
 }
 
 
