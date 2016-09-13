@@ -3,19 +3,17 @@
 var fileName = 'accounts.txt';
 var decodeDigits = {};
 
-processAccounts(fileName);
+createDecodeDigits();
+readInFile(fileName, processFile);
 
-function processAccounts(file){
-
-  console.log("Starting...");
-  createDecodeDigits();
-
+function readInFile(file, callback){
+  var indata, outdata;
   var fs = require('fs'),
       readline = require('readline'),
       stream = require('stream');
 
-  var indata = fs.createReadStream(file);
-  var outdata = new stream;
+  indata = fs.createReadStream(file);
+  outdata = new stream;
   outdata.readable = true;
   outdata.writeable = true;
 
@@ -25,36 +23,41 @@ function processAccounts(file){
     terminal: false
   });
 
-  var l = 0;
-  var accounts = new Array();
-  var account = new Array(9);
+  var fileData = [];
   rl.on('line', function(line){
-    var chars = line.match(/.{1,3}/g);
-    if (l == 0){
-      for(var i in chars){
-        account[i] = chars[i];
-      }
-      l++;
-    }
-    else if (l < 3) {
-      for(var i in chars){
-        account[i] += chars[i];
-      }
-      l++;
-    }
-    else if (l == 3) {
-      l = 0;
-      var num = accountsToNum(account);
+    fileData.push(line);
+  }).on('close', () => {
+    callback(fileData);
+    process.exit(0);
+  });
+}
 
-      // This push call is not working and the num has the account number value
+function processFile(data){
+  var accounts = [];
+  var account = new Array(9);
+  for(var i = 0; i < data.length; i++) {
+    if(((i + 1) % 4) == 0) {
+      var num = accountsToNum(account);
       accounts.push(num);
       account = new Array(9);
+    } else {
+      buildAccountNumber(data[i], account);
     }
-  });
+  }
   console.log(accounts);
   console.log("Done");
 }
 
+function buildAccountNumber(acc_line, account){
+  var chars = acc_line.match(/.{1,3}/g);
+  for(var i in chars){
+    if (account[i]) {
+      account[i] += chars[i];
+    } else {
+      account[i] = chars[i];
+    }
+  }
+}
 
 function accountsToNum (account){
   var accNum = '';
